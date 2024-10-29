@@ -22,15 +22,8 @@ namespace BulkyWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
-            //IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll()
-            //    .Select(u =>
-            //        new SelectListItem
-            //        {
-            //            Value = u.Id.ToString(),
-            //            Text = u.Name
-            //        }
-            //    );
+            List<Product> objProductList = _unitOfWork.Product
+                .GetAll(includeProperties: "Category").ToList();
             return View(objProductList);
         }
         public IActionResult Upsert(int? id)
