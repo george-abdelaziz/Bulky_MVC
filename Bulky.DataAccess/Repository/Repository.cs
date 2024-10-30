@@ -11,41 +11,57 @@ namespace Bulky.DataAccess.Repository
         internal DbSet<T> dbSet;
         public Repository(ApplicationDbContext db)
         {
-            this._db = db;
+            _db = db;
             this.dbSet = _db.Set<T>();
+            //_db.Categories == dbSet
             _db.Products.Include(u => u.Category).Include(u => u.CategoryId);
+
         }
 
         public void Add(T entity)
         {
-            this.dbSet.Add(entity);
+            dbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
         {
-            IQueryable<T> query = this.dbSet;
+            IQueryable<T> query;
+            if (tracked)
+            {
+                query = dbSet;
+
+            }
+            else
+            {
+                query = dbSet.AsNoTracking();
+            }
+
             query = query.Where(filter);
             if (!string.IsNullOrEmpty(includeProperties))
             {
-                foreach (var property in includeProperties
+                foreach (var includeProp in includeProperties
                     .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    query = query.Include(property);
+                    query = query.Include(includeProp);
                 }
             }
             return query.FirstOrDefault();
-            //return dbSet.Where(filter).FirstOrDefault();
+
         }
 
-        public IEnumerable<T> GetAll(string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? includeProperties = null)
         {
-            IQueryable<T> query = this.dbSet;
+            IQueryable<T> query = dbSet;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
             if (!string.IsNullOrEmpty(includeProperties))
             {
-                foreach (var property in includeProperties
+                foreach (var includeProp in includeProperties
                     .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    query = query.Include(property);
+                    query = query.Include(includeProp);
                 }
             }
             return query.ToList();
@@ -53,12 +69,12 @@ namespace Bulky.DataAccess.Repository
 
         public void Remove(T entity)
         {
-            this.dbSet.Remove(entity);
+            dbSet.Remove(entity);
         }
 
-        public void RemoveRange(IEnumerable<T> entities)
+        public void RemoveRange(IEnumerable<T> entity)
         {
-            this.dbSet.RemoveRange(entities);
+            dbSet.RemoveRange(entity);
         }
     }
 }
