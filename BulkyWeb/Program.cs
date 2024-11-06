@@ -5,6 +5,7 @@ using Bulky.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace BulkyWeb
 {
@@ -29,6 +30,8 @@ namespace BulkyWeb
                 options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
             });
+            
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 
             //builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -65,6 +68,8 @@ namespace BulkyWeb
                 endpoints.MapRazorPages(); //Routes for pages
                 endpoints.MapControllers(); //Routes for my API controllers
             });
+
+            StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
             app.Run();
         }
