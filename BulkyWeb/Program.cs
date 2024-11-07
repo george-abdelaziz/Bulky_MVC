@@ -30,7 +30,7 @@ namespace BulkyWeb
                 options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
             });
-            
+
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 
