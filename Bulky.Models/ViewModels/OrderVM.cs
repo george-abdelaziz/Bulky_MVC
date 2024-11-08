@@ -1,4 +1,6 @@
-﻿namespace Bulky.Models.ViewModels
+﻿using Bulky.Models;
+
+namespace Bulky.Models.ViewModels
 {
     public class OrderVM
     {

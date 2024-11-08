@@ -10,19 +10,19 @@ using System.Security.Claims;
 
 namespace BulkyWeb.Areas.Customer.Controllers
 {
-    [Area("Customer")]
+    [Area("customer")]
     [Authorize]
     public class CartController : Controller
     {
 
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IEmailSender _emailSender;
+        //private readonly IEmailSender _emailSender;
         [BindProperty]
         public ShoppingCartVM ShoppingCartVM { get; set; }
-        public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender)
+        public CartController(IUnitOfWork unitOfWork /*, IEmailSender emailSender*/)
         {
             _unitOfWork = unitOfWork;
-            _emailSender = emailSender;
+            //_emailSender = emailSender;
         }
 
 
@@ -39,11 +39,8 @@ namespace BulkyWeb.Areas.Customer.Controllers
                 OrderHeader = new()
             };
 
-            //IEnumerable<ProductImage> productImages = _unitOfWork.ProductImage.GetAll();
-
             foreach (var cart in ShoppingCartVM.ShoppingCartList)
             {
-                //cart.Product.ProductImages = productImages.Where(u => u.ProductId == cart.Product.Id).ToList();
                 cart.Price = GetPriceBasedOnQuantity(cart);
                 ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
@@ -177,26 +174,34 @@ namespace BulkyWeb.Areas.Customer.Controllers
 
         public IActionResult OrderConfirmation(int id)
         {
+
             OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id, includeProperties: "ApplicationUser");
             if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment)
             {
                 //this is an order by customer
+
                 var service = new SessionService();
                 Session session = service.Get(orderHeader.SessionId);
+
                 if (session.PaymentStatus.ToLower() == "paid")
                 {
                     _unitOfWork.OrderHeader.UpdateStripePaymentID(id, session.Id, session.PaymentIntentId);
                     _unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
                     _unitOfWork.Save();
                 }
-                //HttpContext.Session.Clear();
+                HttpContext.Session.Clear();
+
             }
+
             //_emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - Bulky Book",
             //    $"<p>New Order Created - {orderHeader.Id}</p>");
+
             List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart
                 .GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+
             _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
             _unitOfWork.Save();
+
             return View(id);
         }
 
