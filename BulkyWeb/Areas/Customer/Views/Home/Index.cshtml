@@ -1,15 +1,15 @@
 ﻿@model IEnumerable<Product>
 
-<div class="row pb-3 m-4">
+<div class="row pb-3">
     @foreach (var product in Model)
     {
         <div class="col-lg-3 col-sm-6">
             <div class="row p-2">
                 <div class="col-12 p-1">
                     <div class="card border-0 p-3 shadow  border-top border-5 rounded">
-                        @if (product.ImageUrl != null && product.ImageUrl.Count() > 0)
+                        @if (product.ProductImages != null && product.ProductImages.Count() > 0)
                         {
-                            <img src="@product.ImageUrl" class="card-img-top rounded" />
+                            <img src="@product.ProductImages.FirstOrDefault().ImageUrl" class="card-img-top rounded" />
                         }
                         else
                         {

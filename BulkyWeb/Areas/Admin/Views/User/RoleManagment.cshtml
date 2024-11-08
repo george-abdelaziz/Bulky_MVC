@@ -2,11 +2,11 @@
 
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
-    <div class="row">
-        <div class="col-12 text-center">
+        <div class="row">
+            <div class="col-12 text-center">
                 <h2 class="text-white py-2">Manage User Role</h2>
+            </div>
         </div>
-    </div>
     </div>
     <div class="card-body p-4">
         <form method="post" class="row">
@@ -23,7 +23,8 @@
                 @{
                     var companyVisible = "display:none;";
                 }
-                @if (Model.ApplicationUser.Role == SD.Role_Company) {
+                @if (Model.ApplicationUser.Role == SD.Role_Company)
+                {
                     companyVisible = "display:block;";
                 }
                 <div class="form-floating py-2 col-12">
@@ -36,7 +37,7 @@
                         <button type="submit" class="btn btn-primary form-control">Update Role</button>
                     </div>
                     <div class="col-6 col-md-3">
-                        <a  asp-action="Index" class="btn btn-outline-primary border  form-control">
+                        <a asp-action="Index" class="btn btn-outline-primary border  form-control">
                             Back to List
                         </a>
                     </div>
@@ -49,9 +50,9 @@
 
 
 
-@section Scripts{
+@section Scripts {
     @{
-    <partial name="_ValidationScriptsPartial"/>
+        <partial name="_ValidationScriptsPartial" />
     }
     <script>
         $(document).ready(function () {

@@ -33,13 +33,13 @@ namespace BulkyWeb
             });
             builder.Services.AddAuthentication().AddFacebook(option =>
             {
-                option.AppId = "ADD KEY";
-                option.AppSecret = "ADD KEY";
+                option.AppId = "ADD KEY HERE";
+                option.AppSecret = "ADD KEY HERE";
             });
             builder.Services.AddAuthentication().AddMicrosoftAccount(option =>
             {
-                option.ClientId = "ADD KEY";
-                option.ClientSecret = "ADD KEY";
+                option.ClientId = "ADD KEY HERE";
+                option.ClientSecret = "ADD KEY HERE";
             }); 
             builder.Services.AddAuthentication().AddGoogle(option =>
             {
